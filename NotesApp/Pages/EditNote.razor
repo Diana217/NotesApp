@@ -58,10 +58,12 @@ else
         if (note != null)
         {
             await noteService.UpdateAsync(note);
+
             showSuccessMessage = true;
             StateHasChanged();
-            await Task.Delay(1300);
+            await Task.Delay(1000);
             showSuccessMessage = false;
+
             NavigationManager.NavigateTo("/");
         }
     }

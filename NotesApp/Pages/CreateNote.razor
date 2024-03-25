@@ -36,10 +36,12 @@
     private async Task CreateNewNote()
     {
         await noteService.CreateAsync(newNote);
+
         showSuccessMessage = true;
         StateHasChanged();
-        await Task.Delay(1300);
+        await Task.Delay(1000);
         showSuccessMessage = false;
+
         NavigationManager.NavigateTo("/");
     }
 }

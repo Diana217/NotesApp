@@ -12,6 +12,7 @@ namespace NotesApp.Services
             _scopeFactory = scopeFactory;
         }
 
+        // Get all notes with pagination
         public async Task<List<Note>> GetAllAsync(int pageNumber, int pageSize)
         {
             using (var scope = _scopeFactory.CreateScope())
@@ -25,6 +26,7 @@ namespace NotesApp.Services
             }
         }
 
+        // Search notes by term
         public async Task<List<Note>> SearchAsync(string term)
         {
             using (var scope = _scopeFactory.CreateScope())
@@ -41,6 +43,7 @@ namespace NotesApp.Services
             }
         }
 
+        // Get total notes count
         public async Task<int> GetTotalNotesCountAsync()
         {
             using (var scope = _scopeFactory.CreateScope())
@@ -50,6 +53,7 @@ namespace NotesApp.Services
             }
         }
 
+        // Get note by ID
         public async Task<Note?> GetByIdAsync(int id)
         {
             using (var scope = _scopeFactory.CreateScope())
@@ -59,6 +63,7 @@ namespace NotesApp.Services
             }
         }
 
+        // Create a new note
         public async Task CreateAsync(Note note)
         {
             if (string.IsNullOrEmpty(note.Title) || string.IsNullOrEmpty(note.Text))
@@ -85,6 +90,7 @@ namespace NotesApp.Services
             }
         }
 
+        // Update an existing note
         public async Task UpdateAsync(Note note)
         {
             if (string.IsNullOrEmpty(note.Title) || string.IsNullOrEmpty(note.Text))
@@ -113,6 +119,7 @@ namespace NotesApp.Services
             }
         }
 
+        // Delete a note by ID
         public async Task DeleteAsync(int id)
         {
             try
