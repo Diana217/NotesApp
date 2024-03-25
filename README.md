@@ -6,16 +6,19 @@ NotesApp is a simple application designed to help users manage their notes. It a
 The application follows a layered architecture, with a clear separation of concerns:
 
 **Data Layer:** Contains the database context and entity model for storing notes.
+
 **Services Layer:** Implements business logic and services for interacting with notes.
+
 **Presentation Layer:** Provides a user-friendly interface for creating, managing and organizing notes.
+
 **Tests:** Contains unit and integration tests for testing the application functionalities.
 
 ## Technologies Used
-C# programming language
-Blazor Server
-Entity Framework Core for database operations
-PostgreSQL
-NUnit for unit testing
+- C# programming language
+- Blazor Server
+- Entity Framework Core for database operations
+- PostgreSQL
+- NUnit for unit testing
 
 ## Instructions for Running the Project
 1. Clone the repository to your local machine.
