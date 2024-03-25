@@ -223,5 +223,30 @@ namespace Tests
             var savedNote = await _dbContext.Notes.FirstOrDefaultAsync(n => n.ID == note.ID);
             Assert.IsNull(savedNote);
         }
+
+        [Test]
+        public async Task UpdateAsync_DoesNotUpdateNoteWithoutTitleOrText()
+        {
+            // Arrange
+            var note = new Note { Title = "Initial Title 1", Text = "Initial Text 1" };
+            await _dbContext.Notes.AddAsync(note);
+            await _dbContext.SaveChangesAsync();
+
+            var noteWithoutTitle = new Note { ID = note.ID, Text = "This is a note without title." };
+            var noteWithoutText = new Note { ID = note.ID, Title = "Note without text" };
+
+            // Act and Assert
+            try
+            {
+                await _noteService.UpdateAsync(noteWithoutTitle);
+                await _noteService.UpdateAsync(noteWithoutText);
+            }
+            catch (ArgumentException)
+            {
+                return;
+            }
+
+            Assert.Fail("Expected ArgumentException was not thrown.");
+        }
     }
 }
