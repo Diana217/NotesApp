@@ -1,0 +1,12 @@
+﻿.notes-list{
+    list-style-type: none;
+}
+
+.notes-list-item {
+    border: 0.1px solid lightgrey;
+    border-radius: 5px;
+}
+
+.notes-text {
+    display: none;
+}

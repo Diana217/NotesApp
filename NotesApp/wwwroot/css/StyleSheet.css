@@ -1,0 +1,11 @@
+﻿textarea {
+    height: 25vh;
+}
+
+.bold-text {
+    font-weight: bold
+}
+
+.back-link {
+    text-decoration: none;
+}

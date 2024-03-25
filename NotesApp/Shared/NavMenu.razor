@@ -1,0 +1,21 @@
+﻿@inject NotesApp.Services.NoteService noteService
+
+<nav class="navbar navbar-expand-md bg-light" style="border: 0.1px solid lightgrey">
+    <div class="container-fluid">
+        <a class="btn btn-sm btn-outline-dark ms-3" href="create-note">
+            New note
+        </a>
+        <span class="me-3">
+            Total notes: @TotalNotesCount
+        </span>
+    </div>
+</nav>
+
+@code {
+    private int TotalNotesCount { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        TotalNotesCount = await noteService.GetTotalNotesCountAsync();
+    }
+}

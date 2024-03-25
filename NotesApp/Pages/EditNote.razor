@@ -1,0 +1,68 @@
+﻿@page "/edit-note/{id}"
+@inject NotesApp.Services.NoteService noteService
+@inject NavigationManager NavigationManager
+@using NotesApp.Data
+<link href="css/StyleSheet.css" rel="stylesheet" />
+
+<h3>Edit note</h3>
+
+@if (note != null)
+{
+    <div class="col-md-5 mt-3">
+        @if (showSuccessMessage)
+        {
+            <div class="alert alert-success mt-3" role="alert">
+                Note edited successfully!
+            </div>
+        }
+        <form @onsubmit="SaveChanges">
+            <div class="form-group mb-4">
+                <label for="title" class="form-label bold-text">Title</label>
+                <input type="text" class="form-control" id="title" @bind="note.Title" required />
+            </div>
+            <div class="form-group mb-4">
+                <label for="text" class="form-label bold-text">Text</label>
+                <textarea class="form-control" id="text" @bind="note.Text" required></textarea>
+            </div>
+            <div class="form-group mb-3">
+                <button type="submit" class="btn btn-outline-primary">Save</button>
+            </div>
+        </form>
+        <a href="/" class="back-link">Back</a>
+    </div>
+}
+else
+{
+    <p>Note not found</p>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Note note;
+
+    private bool showSuccessMessage = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        int noteId = int.TryParse(Id, out int id) ? id : 0;
+        if (noteId > 0)
+        {
+            note = await noteService.GetByIdAsync(noteId);
+        }
+    }
+
+    private async Task SaveChanges()
+    {
+        if (note != null)
+        {
+            await noteService.UpdateAsync(note);
+            showSuccessMessage = true;
+            StateHasChanged();
+            await Task.Delay(1300);
+            showSuccessMessage = false;
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}

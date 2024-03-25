@@ -1,0 +1,128 @@
+﻿@page "/"
+@inject NotesApp.Services.NoteService noteService
+@inject IJSRuntime JS
+@using NotesApp.Data
+@using System.Linq
+
+<PageTitle>Notes</PageTitle>
+
+<h3 class="mx-2">Notes</h3>
+
+<div class="row mb-3 justify-content-center align-items-center">
+    <div class="col-md-7">
+        <input class="form-control" type="search" placeholder="Enter search term" aria-label="Search" @bind="@SearchTerm" />
+    </div>
+    <div class="col-md-1">
+        <button class="btn btn-sm btn-outline-primary" @onclick="SearchNotes">Search</button>
+    </div>
+</div>
+
+@if (notes != null && notes.Any())
+{
+    <ul class="notes-list">
+        @foreach (var note in notes)
+        {
+            <li class="my-3">
+                <div class="notes-list-item bg-light">
+                    <div class="d-flex justify-content-between align-items-center p-2 px-4">
+                        <div class="col-4">
+                            <strong>@note.Title</strong><br />
+                        </div>
+                        <div class="col-4">
+                            <small>Created @GetTimeAgo(note.CreatedAt)</small>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-light me-2" onclick="toggleNoteText('@note.ID')">View note</button>
+                            <a type="button" class="btn btn-sm btn-outline-dark" href="/edit-note/@note.ID">Edit note</a>
+                        </div>
+                    </div>
+                    <div id="noteText_@note.ID" class="notes-text bg-white p-3">
+                        @note.Text
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+
+    <div class="d-flex justify-content-center mt-3">
+        <nav aria-label="Page navigation">
+            @if (TotalPages > 1)
+            {
+                <ul class="pagination">
+                    @for (int i = 1; i <= TotalPages; i++)
+                    {
+                        var pageNumber = i;
+                        <li class="page-item @(i == CurrentPage ? "active" : "")">
+                            <button id="page@(i)" class="page-link" @onclick="(() => ChangePage(pageNumber))">@i</button>
+                        </li>
+                    }
+                </ul>
+            }
+        </nav>
+    </div>
+}
+else
+{
+    <p>There are no notes to display</p>
+}
+
+@code {
+    private List<Note> notes;
+    private string SearchTerm { get; set; }
+    private int PageSize = 7;
+    private int CurrentPage = 1;
+    private int TotalPages;
+    private int TotalNotesCount { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNotes();
+    }
+
+    private async Task LoadNotes()
+    {
+        if (!string.IsNullOrWhiteSpace(SearchTerm))
+        {
+            notes = await noteService.SearchAsync(SearchTerm);
+            TotalPages = 1;
+        }
+        else
+        {
+            notes = await noteService.GetAllAsync(CurrentPage, PageSize);
+            TotalNotesCount = await noteService.GetTotalNotesCountAsync();
+            TotalPages = (int)Math.Ceiling((double)TotalNotesCount / PageSize);
+        }
+    }
+
+    private string GetTimeAgo(DateTime createdAt)
+    {
+        TimeSpan timeElapsed = DateTime.UtcNow - createdAt;
+        if (timeElapsed.TotalDays < 1)
+            return "today";
+        else
+            return $"{(int)timeElapsed.TotalDays} day(s) ago";
+    }
+
+    private async Task SearchNotes()
+    {
+        CurrentPage = 1;
+        await LoadNotes();
+    }
+
+    public async Task ChangePage(int page)
+    {
+        CurrentPage = page;
+        await LoadNotes();
+    }
+}
+
+<script>
+    function toggleNoteText(noteId) {
+        var element = document.getElementById('noteText_' + noteId);
+        if (element.style.display === 'none') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
